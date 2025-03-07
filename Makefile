@@ -1,52 +1,36 @@
 # Compiler settings
-CC = gcc # compiler
-CFLAGS = -Wall -Wextra -O2 -Iinclude/ -fPIC
+CC = gcc
+CFLAGS = -Wall -Wextra -O2 -Iinclude/
 LDFLAGS = -lm
 
 # File directories
-SRC_DIR = src
-BUILD_DIR = build
-BIN_DIR = bin
 EXAMPLES_DIR = examples
+BIN_DIR = bin
 
-# Find the source files automatically
-SOURCES = $(shell find $(SRC_DIR) -name '*.c')
-OBJECTS = $(SOURCES:$(SRC_DIR)/%.c=$(BUILD_DIR)/%.o)
-LIBRARY = $(BIN_DIR)/libmlc.a
-
-# Find the sample files automatically
+# Find the example files automatically
 EXAMPLES = $(wildcard $(EXAMPLES_DIR)/*.c)
-
+EXAMPLE_BINS = $(EXAMPLES:$(EXAMPLES_DIR)/%.c=$(BIN_DIR)/%)
 
 # Default target
-all: prepare $(LIBRARY)
+all: prepare examples
 
 
 # Create directories
 prepare:
-	@mkdir -p $(BUILD_DIR)/activations
 	@mkdir -p $(BIN_DIR)
-
-# Compile the library
-$(LIBRARY): $(OBJECTS)
-	ar rcs $@ $^
-
-# Inspect object files
-$(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
-	$(CC) $(CFLAGS) -c $< -o $@
 
 
 # Compile the examples
-examples: $(LIBRARY) $(EXAMPLES:$(EXAMPLES_DIR)/%.c=$(BIN_DIR)/%)
+examples: $(EXAMPLE_BINS)
 
-# Rule for the each example
+# Rule for each example
 $(BIN_DIR)/%: $(EXAMPLES_DIR)/%.c
-	$(CC) $(CFLAGS) $< -o $@ -L$(BIN_DIR) -lmlc $(LDFLAGS)
+	$(CC) $(CFLAGS) $< -o $@ $(LDFLAGS)
 
 
 # Clean
 clean:
-	rm -rf $(BUILD_DIR) $(BIN_DIR)
+	rm -rf $(BIN_DIR)
 
 
 .PHONY: all prepare examples clean

@@ -1,4 +1,6 @@
-/* examples/relu_example.c */
+/* examples/swish.c */
+
+#define MLC_DEBUGGER
 
 #include <stdio.h>
 #include <mlc/activations.h>
@@ -8,9 +10,9 @@ int main()
     double inputs[] = {1.0, -2.0, 3.0, -4.0, 5.0};
     size_t size = sizeof(inputs) / sizeof(inputs[0]);
 
-    if (relu(inputs, size) == 0)
+    if (swish(inputs, size) == 0)
     {
-        printf("ReLU Output: \n");
+        printf("swish output: \n");
 
         for (size_t i = 0; i < size; ++i) 
         {
